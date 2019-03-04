@@ -1,5 +1,6 @@
 package com.lightsys.audioapp;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,17 +19,11 @@ import android.content.Context;
 
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
-    SharedPreferences sharedPreferences;
     File fileDir;
-
-
-
-    private static final String TAG = "MainActivity";
-
-    //vars
-    private ArrayList<String> mTextNames = new ArrayList<>();
+    ArrayList Courses;
 
 
     @Override
@@ -37,45 +32,53 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-      
-      /* Changed Where the files go, this would be the external location.
-        //Finds sharedPreferences to gather data from
-        sharedPreferences = this.getSharedPreferences("audioApp", Context.MODE_PRIVATE);
-        //hasInited will figure weather or not the app has been run before.
-        Boolean hasInited = sharedPreferences.getBoolean("sp_init",false);
-        if(!hasInited){//only runs if the app has not been run before
-            SharedPreferences.Editor myEdit = sharedPreferences.edit();
-            myEdit.putBoolean("sp_init",true);
-            myEdit.commit();
-            fileDir = getDir("Courses_Dir",Context.MODE_PRIVATE);//creates the fileDir for the app
-        }
-        */
 
-       FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-      
 
-        //Creating the list
-        for (int i = 0; i < 10; i++){
-            mTextNames.add("Test Course " + i);
-        }
         initRecyclerView();
     }
-  
-    private void initRecyclerView(){
-        Log.d(TAG, "initRecyclerView: init recycler view");
 
+    private void getCourseData() {
+        Courses = new ArrayList<Course>();//init the Array List
+
+        //This section grabs the data from the directory file.
+        String input = "";
+        InputStream temp = getApplicationContext().getResources().openRawResource(R.raw.file_dir);
+        try{
+            Scanner readFile = new Scanner(temp);
+            while(readFile.hasNextLine()){
+                input += readFile.nextLine();
+            }
+        }
+        catch(Exception e){
+
+        }
+        //Now we populate the Courses object
+        while(input.indexOf("<course>")>0){//look for a course
+            String courseSubstring = input.substring(input.indexOf("<course>"),input.indexOf("</course"));//isolate the course
+            Course newCourse = new Course(courseSubstring.substring(courseSubstring.indexOf("name:")+5,courseSubstring.indexOf(";")));
+            while(courseSubstring.indexOf("<lesson>")>0){//look for a lesson
+                Lesson newLesson = new Lesson();//make new lesson
+                String lessonSubstring = input.substring(input.indexOf("<lesson>"),input.indexOf("</lesson"));
+                if(lessonSubstring.indexOf("name:")>0){
+                    newLesson.setName(lessonSubstring.substring(lessonSubstring.indexOf("name:")+5,lessonSubstring.indexOf(";")));
+                }
+                if(lessonSubstring.indexOf("mp3:")>0){
+                    newLesson.setMp3(lessonSubstring.substring(lessonSubstring.indexOf("mp3:")+4,lessonSubstring.indexOf(";")));
+                }
+                if(lessonSubstring.indexOf("text:")>0){
+                    newLesson.setTextData(lessonSubstring.substring(lessonSubstring.indexOf("textData:")+9,lessonSubstring.indexOf(";")));
+                }
+                newCourse.addLesson(newLesson);//put lesson in course
+            }
+            Courses.add(newCourse);//add the course to courses
+        }
+    }
+
+    private void initRecyclerView(){
         RecyclerView recyclerView = findViewById(R.id.recyclerv_view);
-        Recycler_View_Adapter adapter = new Recycler_View_Adapter(mTextNames, this);
+        Recycler_View_Adapter adapter = new Recycler_View_Adapter(Courses, this);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this))
-  
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
 
