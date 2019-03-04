@@ -24,9 +24,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 lessonActivity();
-
-                Snackbar.make(view, "Welcome to Lesson Activity", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
             }
         });
     }

@@ -29,23 +29,14 @@
         android:fitsSystemWindows="true">
 
         <LinearLayout
-            android:id="@+id/fullscreen_content_controls"
+            android:id="@+id/media_controls"
             style="?metaButtonBarStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top|center_horizontal"
             android:background="@color/black_overlay"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             tools:ignore="UselessParent">
-
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/dummy_button"
-                style="?metaButtonBarButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top|end"
-                android:layout_margin="16dp"
-                app:srcCompat="@android:drawable/ic_input_add" />
 
             <android.support.v7.widget.AppCompatImageButton
                 android:id="@+id/play_button"
@@ -56,5 +47,25 @@
                 app:srcCompat="@android:drawable/ic_media_play" />
 
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/content_controls"
+            style="?metaButtonBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:background="@color/black_overlay"
+            tools:ignore="UselessParent">
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/dummy_button"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|end"
+                android:layout_margin="16dp"
+                app:srcCompat="@android:drawable/ic_input_add" />
+        </LinearLayout>
+
     </FrameLayout>
 </FrameLayout>

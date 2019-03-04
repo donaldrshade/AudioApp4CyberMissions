@@ -47,7 +47,8 @@ public class lessonActivity extends AppCompatActivity {
                     | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         }
     };
-    private View mControlsView;
+    private View mContentControlsView;
+    private View mMediaControlsView;
     private final Runnable mShowPart2Runnable = new Runnable() {
         @Override
         public void run() {
@@ -56,7 +57,8 @@ public class lessonActivity extends AppCompatActivity {
             if (actionBar != null) {
                 actionBar.show();
             }
-            mControlsView.setVisibility(View.VISIBLE);
+            mContentControlsView.setVisibility(View.VISIBLE);
+            mMediaControlsView.setVisibility(View.VISIBLE);
         }
     };
     private boolean mVisible;
@@ -73,6 +75,7 @@ public class lessonActivity extends AppCompatActivity {
     };
 
     private MediaPlayer media = null;
+    private ImageButton play;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,13 +84,15 @@ public class lessonActivity extends AppCompatActivity {
         setContentView(R.layout.activity_lesson);
 
         mVisible = true;
-        mControlsView = findViewById(R.id.fullscreen_content_controls);
+        mContentControlsView = findViewById(R.id.content_controls);
+        mMediaControlsView = findViewById(R.id.media_controls);
         mContentView = findViewById(R.id.fullscreen_content);
 
         String url = "l1_born_again.mp3";
         media = createMedia(url);
 
-        ImageButton play = findViewById(R.id.play_button);
+        play = findViewById(R.id.play_button);
+        play.setImageDrawable(getResources().getDrawable(R.drawable.ic_play));
         play.setOnClickListener(new View.OnClickListener() {
             //If audio is playing, clicking this pauses it
             //Otherwise, play audio
@@ -95,8 +100,10 @@ public class lessonActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if(media.isPlaying()){
                     media.pause();
+                    play.setImageDrawable(getResources().getDrawable(R.drawable.ic_play));
                 } else {
                     media.start();
+                    play.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause));
                 }
             }
         });
@@ -151,7 +158,8 @@ public class lessonActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.hide();
         }
-        mControlsView.setVisibility(View.GONE);
+        mContentControlsView.setVisibility(View.GONE);
+        mMediaControlsView.setVisibility(View.GONE);
         mVisible = false;
 
         // Schedule a runnable to remove the status and navigation bar after a delay
