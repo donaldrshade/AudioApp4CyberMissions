@@ -1,6 +1,7 @@
 package com.lightsys.audioapp;
 
 import java.util.ArrayList;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,10 +13,17 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import java.io.File;
+import android.content.Context;
+
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+    SharedPreferences sharedPreferences;
+    File fileDir;
+
+
 
     private static final String TAG = "MainActivity";
 
@@ -29,6 +37,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+      
+      /* Changed Where the files go, this would be the external location.
+        //Finds sharedPreferences to gather data from
+        sharedPreferences = this.getSharedPreferences("audioApp", Context.MODE_PRIVATE);
+        //hasInited will figure weather or not the app has been run before.
+        Boolean hasInited = sharedPreferences.getBoolean("sp_init",false);
+        if(!hasInited){//only runs if the app has not been run before
+            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+            myEdit.putBoolean("sp_init",true);
+            myEdit.commit();
+            fileDir = getDir("Courses_Dir",Context.MODE_PRIVATE);//creates the fileDir for the app
+        }
+        */
 
        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -38,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-
+      
 
         //Creating the list
         for (int i = 0; i < 10; i++){
@@ -46,15 +67,15 @@ public class MainActivity extends AppCompatActivity {
         }
         initRecyclerView();
     }
-
-
+  
     private void initRecyclerView(){
         Log.d(TAG, "initRecyclerView: init recycler view");
 
         RecyclerView recyclerView = findViewById(R.id.recyclerv_view);
         Recycler_View_Adapter adapter = new Recycler_View_Adapter(mTextNames, this);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this))
+  
     }
 
 
@@ -74,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            //Put Action Code here when they select it.
         }
 
         return super.onOptionsItemSelected(item);
