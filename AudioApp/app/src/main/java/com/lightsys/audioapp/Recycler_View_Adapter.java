@@ -19,12 +19,14 @@ import java.util.ArrayList;
 public class Recycler_View_Adapter extends RecyclerView.Adapter<Recycler_View_Adapter.ViewHolder>{
     private static final String TAG = "Recycler_View_Adapter";
 
-    private ArrayList<String> mTextNames = new ArrayList<>();
+    private ArrayList<String> mcourseNames = new ArrayList<>();
     private Context mContext;
 
-    public Recycler_View_Adapter(ArrayList<String> textName, Context context){
+    public Recycler_View_Adapter(ArrayList<Course> courseName, Context context){
         mContext = context;
-        mTextNames = textName;
+        for (int i = 0; i < courseName.size(); i++){
+            mcourseNames.add(courseName.get(i).name);
+        }
     }
 
     @NonNull
@@ -39,13 +41,13 @@ public class Recycler_View_Adapter extends RecyclerView.Adapter<Recycler_View_Ad
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int position) {
         Log.d(TAG, "onBindViewHolder: called.");
 
-        viewHolder.textName.setText(mTextNames.get(position));
+        viewHolder.courseName.setText(mcourseNames.get(position));
         viewHolder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "onClick: Clicked on : " + mTextNames.get(position));
+                Log.d(TAG, "onClick: Clicked on : " + mcourseNames.get(position));
 
-                Toast.makeText(mContext, mTextNames.get(position), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, mcourseNames.get(position), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -53,16 +55,16 @@ public class Recycler_View_Adapter extends RecyclerView.Adapter<Recycler_View_Ad
 
     @Override
     public int getItemCount() {
-        return mTextNames.size();
+        return mcourseNames.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-        TextView textName;
+        TextView courseName;
         RelativeLayout parentLayout;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            textName = itemView.findViewById(R.id.text_name);
+            courseName = itemView.findViewById(R.id.text_name);
             parentLayout = itemView.findViewById(R.id.parent_layout);
         }
     }

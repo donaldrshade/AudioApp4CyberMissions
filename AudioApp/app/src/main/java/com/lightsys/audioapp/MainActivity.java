@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     //vars
-    private ArrayList<String> mTextNames = new ArrayList<>();
+    private ArrayList<Course> mCourses = new ArrayList<>();
 
 
     @Override
@@ -62,9 +62,8 @@ public class MainActivity extends AppCompatActivity {
       
 
         //Creating the list
-        for (int i = 0; i < 10; i++){
-            mTextNames.add("Test Course " + i);
-        }
+
+        //create recycler view
         initRecyclerView();
     }
   
@@ -72,9 +71,9 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "initRecyclerView: init recycler view");
 
         RecyclerView recyclerView = findViewById(R.id.recyclerv_view);
-        Recycler_View_Adapter adapter = new Recycler_View_Adapter(mTextNames, this);
+        Recycler_View_Adapter adapter = new Recycler_View_Adapter(mCourses, this);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this))
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
   
     }
 
