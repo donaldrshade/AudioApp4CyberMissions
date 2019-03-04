@@ -24,8 +24,6 @@ import java.util.Scanner;
 public class MainActivity extends AppCompatActivity {
     File fileDir;
     ArrayList Courses;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,7 +98,6 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             //Put Action Code here when they select it.
         }
-
         return super.onOptionsItemSelected(item);
     }
 }
