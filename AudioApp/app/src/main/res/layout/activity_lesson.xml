@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#0099cc"
     tools:context=".lessonActivity">
 
@@ -37,15 +38,15 @@
             android:orientation="horizontal"
             tools:ignore="UselessParent">
 
-            <Button
+            <android.support.design.widget.FloatingActionButton
                 android:id="@+id/dummy_button"
                 style="?metaButtonBarButtonStyle"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/dummy_button" />
+                android:layout_gravity="bottom|end"
+                android:layout_margin="16dp"
+                app:srcCompat="@android:drawable/ic_input_add" />
 
         </LinearLayout>
     </FrameLayout>
-
 </FrameLayout>
