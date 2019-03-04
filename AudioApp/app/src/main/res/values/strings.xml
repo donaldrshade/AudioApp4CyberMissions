@@ -5,4 +5,6 @@
     <string name="title_activity_lesson">lessonActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="sp_init">hasInited</string>
+    <string name="sp">audioApp</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.lightsys.audioapp;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -8,8 +9,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import java.io.File;
+import android.content.Context;
+
 
 public class MainActivity extends AppCompatActivity {
+    SharedPreferences sharedPreferences;
+    File fileDir;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,14 +26,18 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-       FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        /* Changed Where the files go, this would be the external location.
+        //Finds sharedPreferences to gather data from
+        sharedPreferences = this.getSharedPreferences("audioApp", Context.MODE_PRIVATE);
+        //hasInited will figure weather or not the app has been run before.
+        Boolean hasInited = sharedPreferences.getBoolean("sp_init",false);
+        if(!hasInited){//only runs if the app has not been run before
+            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+            myEdit.putBoolean("sp_init",true);
+            myEdit.commit();
+            fileDir = getDir("Courses_Dir",Context.MODE_PRIVATE);//creates the fileDir for the app
+        }
+        */
     }
 
     @Override
@@ -44,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            //Put Action Code here when they select it.
         }
 
         return super.onOptionsItemSelected(item);
