@@ -2,6 +2,7 @@ package com.lightsys.audioapp;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
@@ -11,22 +12,16 @@ import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 
+import android.media.MediaPlayer;
+import android.widget.ImageButton;
+
+import java.io.IOException;
+
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
 public class lessonActivity extends AppCompatActivity {
-    /**
-     * Whether or not the system UI should be auto-hidden after
-     * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
-     */
-    private static final boolean AUTO_HIDE = false;
-
-    /**
-     * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after
-     * user interaction before hiding the system UI.
-     */
-    private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
 
     /**
      * Some older devices needs a small delay between UI widget updates
@@ -77,6 +72,8 @@ public class lessonActivity extends AppCompatActivity {
         }
     };
 
+    private MediaPlayer media = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,14 +84,31 @@ public class lessonActivity extends AppCompatActivity {
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.fullscreen_content);
 
-        FloatingActionButton fab = findViewById(R.id.dummy_button);
-        fab.setOnClickListener(new View.OnClickListener() {
+        String url = "l1_born_again.mp3";
+        media = createMedia(url);
+
+        ImageButton play = findViewById(R.id.play_button);
+        play.setOnClickListener(new View.OnClickListener() {
+            //If audio is playing, clicking this pauses it
+            //Otherwise, play audio
             @Override
             public void onClick(View view) {
-                mainActivity();
+                if(media.isPlaying()){
+                    media.pause();
+                } else {
+                    media.start();
+                }
+            }
+        });
 
-                Snackbar.make(view, "Welcome to Main Activity", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+        FloatingActionButton home = findViewById(R.id.dummy_button);
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                media.release();
+                media = null;
+
+                mainActivity();
             }
         });
 
@@ -109,7 +123,12 @@ public class lessonActivity extends AppCompatActivity {
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
-        findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+        findViewById(R.id.play_button).setOnTouchListener(mDelayHideTouchListener);
+    }
+
+    private MediaPlayer createMedia(String url){
+        MediaPlayer mediaPlayer = MediaPlayer.create(lessonActivity.this, R.raw.l1_born_again);
+        return mediaPlayer;
     }
 
     private void mainActivity() {
