@@ -1,0 +1,12 @@
+<course>
+    name:"Spiritual Continuum"
+    <lesson>
+        name:Be Born Again;
+        mp3:born_again_1;
+        text:this_text.txt;
+    </lesson>
+    <lesson>
+        name:Set Your Mind On The Spirit;
+        mp3:set_mind_spirit_2;
+     </lesson>
+</course>
