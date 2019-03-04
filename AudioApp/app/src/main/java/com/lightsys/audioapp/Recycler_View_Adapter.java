@@ -3,7 +3,6 @@ package com.lightsys.audioapp;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerViewAccessibilityDelegate;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,15 +10,19 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.bumptech.glide.Glide;
-
 import java.util.ArrayList;
 
+
+/*  class Recycler_View_Adapter
+        Creating a Recycling list with the size of "courseName"
+        using the layout from "layout_course_listitem.xml"
+ */
 public class Recycler_View_Adapter extends RecyclerView.Adapter<Recycler_View_Adapter.ViewHolder>{
     private static final String TAG = "Recycler_View_Adapter";
 
+    //The names of the courses to be displayed
     private ArrayList<String> mcourseNames = new ArrayList<>();
+
     private Context mContext;
 
     public Recycler_View_Adapter(ArrayList<Course> courseName, Context context){
@@ -60,11 +63,14 @@ public class Recycler_View_Adapter extends RecyclerView.Adapter<Recycler_View_Ad
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
+        //Course name
         TextView courseName;
+
+        //The layout for each list item
         RelativeLayout parentLayout;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            courseName = itemView.findViewById(R.id.text_name);
+            courseName = itemView.findViewById(R.id.course_name);
             parentLayout = itemView.findViewById(R.id.parent_layout);
         }
     }
