@@ -61,7 +61,7 @@ public class lessonActivity extends AppCompatActivity {
         String mp3 = inputIntent.getStringExtra("lesson_mp3");
         String name = inputIntent.getStringExtra("lesson_name");
         String course = inputIntent.getStringExtra("course_name");
-        
+
         setTitle(name);
         Lesson lessonCheck = new Lesson(name,course);
         try {
@@ -239,7 +239,8 @@ public class lessonActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    //TODO: Description
+    //When lesson activity closes, save information
+    //and close MediaPlayer before exiting
     @Override
     protected void onStop() {
         //If we close before the audio is finished, save current position
