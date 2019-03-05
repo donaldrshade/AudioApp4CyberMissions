@@ -30,7 +30,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+      
+      /* Changed Where the files go, this would be the external location.
+        //Finds sharedPreferences to gather data from
+        sharedPreferences = this.getSharedPreferences("audioApp", Context.MODE_PRIVATE);
+        //hasInited will figure weather or not the app has been run before.
+        Boolean hasInited = sharedPreferences.getBoolean("sp_init",false);
+        if(!hasInited){//only runs if the app has not been run before
+            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+            myEdit.putBoolean("sp_init",true);
+            myEdit.commit();
+            fileDir = getDir("Courses_Dir",Context.MODE_PRIVATE);//creates the fileDir for the app
+        }
+        */
         getCourseData();
         initRecyclerView();
     }
