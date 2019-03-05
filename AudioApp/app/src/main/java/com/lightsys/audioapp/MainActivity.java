@@ -59,9 +59,7 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-      
 
-        //Creating the list
 
         //create recycler view
         initRecyclerView();
