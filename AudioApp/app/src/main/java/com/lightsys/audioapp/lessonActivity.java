@@ -197,10 +197,10 @@ public class lessonActivity extends AppCompatActivity {
                 if(media != null) {
                     seek.setProgress(media.getCurrentPosition());
                 }
-                mHandler.postDelayed(mRunnable, 500);
+                mHandler.postDelayed(mRunnable, 1000);
             }
         };
-        mHandler.postDelayed(mRunnable, 500);
+        mHandler.postDelayed(mRunnable, 1000);
     }
     
     //Returns from lesson to MainActivity
