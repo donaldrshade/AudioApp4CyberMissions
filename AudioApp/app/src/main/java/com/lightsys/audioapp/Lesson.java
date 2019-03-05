@@ -3,22 +3,34 @@ package com.lightsys.audioapp;
 public class Lesson {
     String name;
     String mp3;
+    int seekTime;
     String textData;
-
+    String notes;
+    String course;
     Lesson(){
-
+        seekTime = 0;
+        notes = "";
     }
-    Lesson(String name){
+    Lesson(String name,String course){
         this.name = name;
+        this.course = course;
+        seekTime = 0;
+        notes= "";
     }
-    Lesson(String name,String mp3){
+    Lesson(String name,String mp3,String course){
         this.name = name;
         this.mp3 = mp3;
+        this.course = course;
+        seekTime = 0;
+        notes= "";
     }
-    Lesson(String name,String mp3,String textData){
+    Lesson(String name,String mp3,String textData,String course){
         this.name = name;
         this.mp3 = mp3;
         this.textData = textData;
+        this.course = course;
+        seekTime = 0;
+        notes= "";
     }
 
     public String getName() {
@@ -43,5 +55,29 @@ public class Lesson {
 
     public void setTextData(String textData) {
         this.textData = textData;
+    }
+
+    public String getCourse() {
+        return course;
+    }
+
+    public void setCourse(String course) {
+        this.course = course;
+    }
+
+    public int getSeekTime() {
+        return seekTime;
+    }
+
+    public void setSeekTime(int seekTime) {
+        this.seekTime = seekTime;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 }

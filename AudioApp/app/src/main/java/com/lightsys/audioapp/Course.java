@@ -6,7 +6,6 @@ public class Course {
     String name;
     ArrayList lessons;
 
-
     Course(String name){
         this.name = name;
         lessons = null;
@@ -19,5 +18,8 @@ public class Course {
     }
     ArrayList getLessons(){
         return lessons;
+    }
+    public String getName() {
+        return name;
     }
 }

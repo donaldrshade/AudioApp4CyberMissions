@@ -56,13 +56,16 @@ public class MainActivity extends AppCompatActivity {
         catch(Exception e){
 
         }
+        DatabaseConnection db = new DatabaseConnection(this.getApplicationContext());
         //Now we populate the Courses object
         while(input.indexOf("<course>")>=0){//look for a course
-            String courseSubstring = input.substring(input.indexOf("<course>"),input.indexOf("</course"));//isolate the course
+            String courseSubstring = input.substring(input.indexOf("<course>")+8,input.indexOf("</course>")).trim();//isolate the course
             Course newCourse = new Course(courseSubstring.substring(courseSubstring.indexOf("name:")+5,courseSubstring.indexOf(";")));
+            courseSubstring = courseSubstring.substring(newCourse.getName().length()+5).trim();
             while(courseSubstring.indexOf("<lesson>")>=0){//look for a lesson
                 Lesson newLesson = new Lesson();//make new lesson
-                String lessonSubstring = input.substring(input.indexOf("<lesson>"),input.indexOf("</lesson"));
+                newLesson.setCourse(newCourse.getName());
+                String lessonSubstring = courseSubstring.substring(courseSubstring.indexOf("<lesson>")+8,courseSubstring.indexOf("</lesson>"));
                 if(lessonSubstring.indexOf("name:")>=0){
                     int startPoint = lessonSubstring.indexOf("name:")+5;
                     newLesson.setName(lessonSubstring.substring(startPoint,lessonSubstring.indexOf(";",startPoint)));
@@ -75,7 +78,8 @@ public class MainActivity extends AppCompatActivity {
                     int startPoint = lessonSubstring.indexOf("text:")+5;
                     newLesson.setTextData(lessonSubstring.substring(startPoint,lessonSubstring.indexOf(";",startPoint)));
                 }
-                courseSubstring = courseSubstring.substring(lessonSubstring.length());
+                db.addLesson(newLesson);
+                courseSubstring = courseSubstring.substring(courseSubstring.indexOf("</lesson>")+9).trim();
                 newCourse.addLesson(newLesson);//put lesson in course
             }
             Courses.add(newCourse);//add the course to courses
