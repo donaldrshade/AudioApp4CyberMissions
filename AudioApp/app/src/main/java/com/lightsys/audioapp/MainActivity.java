@@ -41,6 +41,13 @@ public class MainActivity extends AppCompatActivity {
         initRecyclerView();
     }
 
+       FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                lessonActivity();
+            }
+        }
     private void getCourseData() {
         Courses = new ArrayList<Course>();//init the Array List
 
@@ -99,6 +106,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    //Go to lesson activity
+    //TODO: Remove this once RecyclerView is implemented
+    private void lessonActivity() {
+        Intent lesson = new Intent(MainActivity.this, lessonActivity.class);
+        startActivity(lesson);
+    }
+
+    //Open menu
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -106,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    //Menu item actions
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will

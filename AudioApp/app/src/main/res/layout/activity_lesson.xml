@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -28,24 +29,74 @@
         android:fitsSystemWindows="true">
 
         <LinearLayout
-            android:id="@+id/fullscreen_content_controls"
+            android:id="@+id/content_controls"
             style="?metaButtonBarStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
+            android:layout_gravity="top|center_horizontal"
             android:background="@color/black_overlay"
-            android:orientation="horizontal"
             tools:ignore="UselessParent">
 
-            <Button
-                android:id="@+id/dummy_button"
-                style="?metaButtonBarButtonStyle"
-                android:layout_width="0dp"
+            <RelativeLayout
+                android:id="@+id/media_controls"
+                style="?metaButtonBarStyle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/dummy_button" />
+                android:layout_gravity="top|center_horizontal"
+                android:background="@color/black_overlay"
+                tools:ignore="UselessParent">
 
+                <android.support.v7.widget.AppCompatImageButton
+                    android:id="@+id/previous_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_margin="12dp"
+                    app:srcCompat="@android:drawable/ic_media_previous" />
+
+                <android.support.v7.widget.AppCompatImageButton
+                    android:id="@+id/back10_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp"
+                    android:layout_toRightOf="@+id/previous_button"
+                    app:srcCompat="@android:drawable/ic_media_rew" />
+
+                <android.support.v7.widget.AppCompatImageButton
+                    android:id="@+id/play_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/fwd10_button"
+                    android:layout_toRightOf="@+id/back10_button"
+                    app:srcCompat="@android:drawable/ic_media_play" />
+
+                <android.support.v7.widget.AppCompatImageButton
+                    android:id="@+id/fwd10_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/next_button"
+                    app:srcCompat="@android:drawable/ic_media_ff" />
+
+                <android.support.v7.widget.AppCompatImageButton
+                    android:id="@+id/next_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_margin="12dp"
+                    app:srcCompat="@android:drawable/ic_media_next" />
+
+                <android.support.v7.widget.AppCompatSeekBar
+                    android:id="@+id/seek_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/play_button"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginBottom="20dp"/>
+            </RelativeLayout>
         </LinearLayout>
     </FrameLayout>
-
 </FrameLayout>

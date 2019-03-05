@@ -1,87 +1,48 @@
 package com.lightsys.audioapp;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.nfc.FormatException;
+import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.MotionEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+
+import android.media.MediaPlayer;
+import android.widget.ImageButton;
+import android.widget.SeekBar;
+import android.widget.Toast;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
 public class lessonActivity extends AppCompatActivity {
-    /**
-     * Whether or not the system UI should be auto-hidden after
-     * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
-     */
-    private static final boolean AUTO_HIDE = true;
 
-    /**
-     * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after
-     * user interaction before hiding the system UI.
-     */
-    private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
+    private View mContentView;          //Main page
+    private View mContentControlsView;  //Bottom controls
+    private View mMediaControlsView;    //Top (audio) controls
 
-    /**
-     * Some older devices needs a small delay between UI widget updates
-     * and a change of the status and navigation bar.
-     */
-    private static final int UI_ANIMATION_DELAY = 300;
-    private final Handler mHideHandler = new Handler();
-    private View mContentView;
-    private final Runnable mHidePart2Runnable = new Runnable() {
-        @SuppressLint("InlinedApi")
-        @Override
-        public void run() {
-            // Delayed removal of status and navigation bar
 
-            // Note that some of these constants are new as of API 16 (Jelly Bean)
-            // and API 19 (KitKat). It is safe to use them, as they are inlined
-            // at compile-time and do nothing on earlier devices.
-            mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
-                    | View.SYSTEM_UI_FLAG_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-        }
-    };
-    private View mControlsView;
-    private final Runnable mShowPart2Runnable = new Runnable() {
-        @Override
-        public void run() {
-            // Delayed display of UI elements
-            ActionBar actionBar = getSupportActionBar();
-            if (actionBar != null) {
-                actionBar.show();
-            }
-            mControlsView.setVisibility(View.VISIBLE);
-        }
-    };
+
+    //Media Buttons
+    private MediaPlayer media = null;
+    private ImageButton play;
+    private ImageButton back10;
+    private ImageButton fwd10;
+    private ImageButton prev;
+    private ImageButton next;
+    private SeekBar seek;
+
+    //Other Declarations
     private boolean mVisible;
-    private final Runnable mHideRunnable = new Runnable() {
-        @Override
-        public void run() {
-            hide();
-        }
-    };
-    /**
-     * Touch listener to use for in-layout UI controls to delay hiding the
-     * system UI. This is to prevent the jarring behavior of controls going away
-     * while interacting with activity UI.
-     */
-    private final View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            if (AUTO_HIDE) {
-                delayedHide(AUTO_HIDE_DELAY_MILLIS);
-            }
-            return false;
-        }
-    };
+    private boolean mIsPlaying = false;
+    private Runnable mRunnable;
+    private Handler mHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,74 +51,200 @@ public class lessonActivity extends AppCompatActivity {
         setContentView(R.layout.activity_lesson);
 
         mVisible = true;
-        mControlsView = findViewById(R.id.fullscreen_content_controls);
+        mContentControlsView = findViewById(R.id.content_controls);
+        mMediaControlsView = findViewById(R.id.media_controls);
         mContentView = findViewById(R.id.fullscreen_content);
 
+        //Enable back button
+        ActionBar actionBar = this.getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
-        // Set up the user interaction to manually show or hide the system UI.
-        mContentView.setOnClickListener(new View.OnClickListener() {
+        //TODO: Get string from Script file thing
+        String mp3 = "l1_born_again.mp3";
+        try {
+            media = createMedia(mp3);
+        } catch (FormatException e) {
+            Toast.makeText(getApplicationContext(), "Incorrect file format", Toast.LENGTH_SHORT).show();
+            mainActivity();
+        }
+
+        //If audio is playing, clicking play button pauses it
+        //Otherwise, play audio
+        play = findViewById(R.id.play_button);
+        play.setImageDrawable(getResources().getDrawable(R.drawable.ic_play));
+        play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                toggle();
+                if(media.isPlaying()){
+                    media.pause();
+                    play.setImageDrawable(getResources().getDrawable(R.drawable.ic_play));
+                    mIsPlaying = false;
+                } else {
+                    media.start();
+                    play.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause));
+                    mIsPlaying = true;
+                }
             }
         });
 
-        // Upon interacting with UI controls, delay any scheduled hide()
-        // operations to prevent the jarring behavior of controls going away
-        // while interacting with the UI.
-        findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+        //Seek to 10 seconds behind current position
+        back10 = findViewById(R.id.back10_button);
+        back10.setImageDrawable(getResources().getDrawable(R.drawable.ic_back10));
+        back10.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                media.seekTo(media.getCurrentPosition() - 10000);
+                seek.setProgress(media.getCurrentPosition());
+            }
+        });
+
+        //Seek to 10 seconds ahead of current position
+        fwd10 = findViewById(R.id.fwd10_button);
+        fwd10.setImageDrawable(getResources().getDrawable(R.drawable.ic_fwd10));
+        fwd10.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                media.seekTo(media.getCurrentPosition() + 10000);
+                seek.setProgress(media.getCurrentPosition());
+            }
+        });
+
+        //Seek back to start of audio
+        prev = findViewById(R.id.previous_button);
+        prev.setImageDrawable(getResources().getDrawable(R.drawable.ic_prev));
+        prev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                media.seekTo(0);
+                seek.setProgress(media.getCurrentPosition());
+            }
+        });
+
+        //Seek to end of audio
+        //TODO: When end of audio reached, prompt to load next lesson
+        next = findViewById(R.id.next_button);
+        next.setImageDrawable(getResources().getDrawable(R.drawable.ic_next));
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                media.seekTo(media.getDuration());
+                seek.setProgress(media.getCurrentPosition());
+            }
+        });
+
+        seek = findViewById(R.id.seek_bar);
+        initSeekBar();
+        seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                if(b){
+                    media.seekTo(i);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                if(mIsPlaying){
+                    media.pause();  //Only pause if currently playing
+                }
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                if(mIsPlaying){
+                    media.start();  //Only resume if previously playing
+                }
+            }
+        });
+
+        //When activity screen clicked, toggle visibility of controls
+        mContentView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mVisible) {
+                    mMediaControlsView.setVisibility(View.GONE);
+                    mVisible = false;
+                } else {
+                    mMediaControlsView.setVisibility(View.VISIBLE);
+                    mVisible = true;
+                }
+            }
+        });
     }
 
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-
-        // Trigger the initial hide() shortly after the activity has been
-        // created, to briefly hint to the user that UI controls
-        // are available.
-        delayedHide(100);
-    }
-
-    private void toggle() {
-        if (mVisible) {
-            hide();
+    //Creates and prepares media to be played
+    //Throws FormatException if file is not an mp3
+    private MediaPlayer createMedia(String mp3) throws FormatException {
+        if(mp3.contains(".mp3")) {
+            String file = mp3.replace(".mp3", "");
+            int id = getResources().getIdentifier(file,"raw", getPackageName());
+            MediaPlayer mediaPlayer = MediaPlayer.create(lessonActivity.this, id);
+            return mediaPlayer;
         } else {
-            show();
+            throw new FormatException();
         }
     }
 
-    private void hide() {
-        // Hide UI first
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.hide();
+    //Initialize SeekBar to auto-update position with audio
+    protected void initSeekBar(){
+        seek.setMax(media.getDuration());
+
+        mRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if(media != null) {
+                    seek.setProgress(media.getCurrentPosition());
+                }
+                mHandler.postDelayed(mRunnable, 1000);
+            }
+        };
+        mHandler.postDelayed(mRunnable, 1000);
+    }
+    
+    //Returns from lesson to MainActivity
+    //and closes current lesson
+    private void mainActivity() {
+        Intent main = new Intent(lessonActivity.this, MainActivity.class);
+        startActivity(main);
+        finish();
+    }
+
+    //Open menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_lesson, menu);
+        return true;
+    }
+
+    //Menu item actions
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //TODO: Description
+        if (id == R.id.action_notes) {
+            Toast.makeText(this, "Take Some Good Notes", Toast.LENGTH_SHORT).show();
         }
-        mControlsView.setVisibility(View.GONE);
-        mVisible = false;
 
-        // Schedule a runnable to remove the status and navigation bar after a delay
-        mHideHandler.removeCallbacks(mShowPart2Runnable);
-        mHideHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY);
+        return super.onOptionsItemSelected(item);
     }
 
-    @SuppressLint("InlinedApi")
-    private void show() {
-        // Show the system bar
-        mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
-        mVisible = true;
-
-        // Schedule a runnable to display UI elements after a delay
-        mHideHandler.removeCallbacks(mHidePart2Runnable);
-        mHideHandler.postDelayed(mShowPart2Runnable, UI_ANIMATION_DELAY);
-    }
-
-    /**
-     * Schedules a call to hide() in delay milliseconds, canceling any
-     * previously scheduled calls.
-     */
-    private void delayedHide(int delayMillis) {
-        mHideHandler.removeCallbacks(mHideRunnable);
-        mHideHandler.postDelayed(mHideRunnable, delayMillis);
+    //TODO: Description
+    @Override
+    protected void onStop() {
+        //If we close before the audio is finished, save current position
+        int currentPosition = media.getCurrentPosition();
+        if(currentPosition != media.getDuration()){
+            //TODO: Save to database
+        }
+        media.release();
+        media = null;
+        super.onStop();
     }
 }
