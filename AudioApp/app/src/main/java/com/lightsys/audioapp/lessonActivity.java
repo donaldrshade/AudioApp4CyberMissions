@@ -13,6 +13,7 @@ import android.view.View;
 
 import android.media.MediaPlayer;
 import android.widget.ImageButton;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 /**
@@ -34,6 +35,7 @@ public class lessonActivity extends AppCompatActivity {
     private ImageButton fwd10;
     private ImageButton prev;
     private ImageButton next;
+    private SeekBar seek;
 
     //Content Buttons
     private FloatingActionButton home;
@@ -122,17 +124,7 @@ public class lessonActivity extends AppCompatActivity {
             }
         });
 
-        //TODO: Put this in menu rather than FAB
-        home = findViewById(R.id.home_button);
-        home.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                media.release();
-                media = null;
-
-                mainActivity();
-            }
-        });
+        seek = findViewById(R.id.seek_bar);
 
         //When activity screen clicked, toggle visibility of controls
         mContentView.setOnClickListener(new View.OnClickListener() {
@@ -200,12 +192,20 @@ public class lessonActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+        //TODO: Description
         if (id == R.id.action_notes) {
-            //add code to do the switching here.
             Toast.makeText(this, "Take Some Good Notes", Toast.LENGTH_SHORT).show();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    //TODO: Description
+    @Override
+    protected void onStop() {
+        //TODO: Save stuff here?
+        media.release();
+        media = null;
+        super.onStop();
     }
 }
