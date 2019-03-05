@@ -28,12 +28,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //Go to lesson activity
+    //TODO: Remove this once RecyclerView is implemented
     private void lessonActivity() {
         Intent lesson = new Intent(MainActivity.this, lessonActivity.class);
         startActivity(lesson);
-        finish();
     }
 
+    //Open menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    //Menu item actions
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will

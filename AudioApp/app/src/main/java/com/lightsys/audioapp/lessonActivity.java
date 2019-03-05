@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.nfc.FormatException;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -47,6 +48,12 @@ public class lessonActivity extends AppCompatActivity {
         mContentControlsView = findViewById(R.id.content_controls);
         mMediaControlsView = findViewById(R.id.media_controls);
         mContentView = findViewById(R.id.fullscreen_content);
+
+        //Enable back button
+        ActionBar actionBar = this.getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         //TODO: Get string from Script file thing
         String mp3 = "l1_born_again.mp3";
@@ -153,7 +160,8 @@ public class lessonActivity extends AppCompatActivity {
         }
     }
     
-    //Returns from lessonActivity to MainActivity
+    //Returns from lesson to MainActivity
+    //and closes current lesson
     private void mainActivity() {
         Intent main = new Intent(lessonActivity.this, MainActivity.class);
         startActivity(main);
@@ -176,6 +184,7 @@ public class lessonActivity extends AppCompatActivity {
         mVisible = true;
     }
 
+    //Open menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -183,6 +192,7 @@ public class lessonActivity extends AppCompatActivity {
         return true;
     }
 
+    //Menu item actions
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will

@@ -12,6 +12,7 @@
         <activity
             android:name=".lessonActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
+            android:parentActivityName=".MainActivity"
             android:label="@string/title_activity_lesson"
             android:theme="@style/FullscreenTheme"></activity>
         <activity
