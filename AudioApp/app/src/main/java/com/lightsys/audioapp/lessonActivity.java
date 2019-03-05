@@ -238,7 +238,11 @@ public class lessonActivity extends AppCompatActivity {
     //TODO: Description
     @Override
     protected void onStop() {
-        //TODO: Save stuff here?
+        //If we close before the audio is finished, save current position
+        int currentPosition = media.getCurrentPosition();
+        if(currentPosition != media.getDuration()){
+            //TODO: Save to database
+        }
         media.release();
         media = null;
         super.onStop();
