@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:text="Course Name"
-        android:textSize="40dp"
+        android:textSize="15dp"
         android:textColor="#000"
         android:layout_centerHorizontal="true"
 />
