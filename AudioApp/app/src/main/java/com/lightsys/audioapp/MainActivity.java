@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
+        getCourseData();
         initRecyclerView();
     }
 
@@ -51,24 +51,33 @@ public class MainActivity extends AppCompatActivity {
 
         }
         //Now we populate the Courses object
-        while(input.indexOf("<course>")>0){//look for a course
+        while(input.indexOf("<course>")>=0){//look for a course
             String courseSubstring = input.substring(input.indexOf("<course>"),input.indexOf("</course"));//isolate the course
             Course newCourse = new Course(courseSubstring.substring(courseSubstring.indexOf("name:")+5,courseSubstring.indexOf(";")));
-            while(courseSubstring.indexOf("<lesson>")>0){//look for a lesson
+            while(courseSubstring.indexOf("<lesson>")>=0){//look for a lesson
                 Lesson newLesson = new Lesson();//make new lesson
                 String lessonSubstring = input.substring(input.indexOf("<lesson>"),input.indexOf("</lesson"));
-                if(lessonSubstring.indexOf("name:")>0){
-                    newLesson.setName(lessonSubstring.substring(lessonSubstring.indexOf("name:")+5,lessonSubstring.indexOf(";")));
+                if(lessonSubstring.indexOf("name:")>=0){
+                    int startPoint = lessonSubstring.indexOf("name:")+5;
+                    newLesson.setName(lessonSubstring.substring(startPoint,lessonSubstring.indexOf(";",startPoint)));
                 }
-                if(lessonSubstring.indexOf("mp3:")>0){
-                    newLesson.setMp3(lessonSubstring.substring(lessonSubstring.indexOf("mp3:")+4,lessonSubstring.indexOf(";")));
+                if(lessonSubstring.indexOf("mp3:")>=0){
+                    int startPoint = lessonSubstring.indexOf("mp3:")+4;
+                    newLesson.setMp3(lessonSubstring.substring(startPoint,lessonSubstring.indexOf(";",startPoint)));
                 }
-                if(lessonSubstring.indexOf("text:")>0){
-                    newLesson.setTextData(lessonSubstring.substring(lessonSubstring.indexOf("textData:")+9,lessonSubstring.indexOf(";")));
+                if(lessonSubstring.indexOf("text:")>=0){
+                    int startPoint = lessonSubstring.indexOf("text:")+5;
+                    newLesson.setTextData(lessonSubstring.substring(startPoint,lessonSubstring.indexOf(";",startPoint)));
                 }
+                courseSubstring = courseSubstring.substring(lessonSubstring.length());
                 newCourse.addLesson(newLesson);//put lesson in course
             }
             Courses.add(newCourse);//add the course to courses
+            //refind the course
+            courseSubstring = input.substring(input.indexOf("<course>"),input.indexOf("</course")+9);//isolate the course
+            //remove it from the other screen
+
+            input = input.substring(courseSubstring.length());
         }
     }
 

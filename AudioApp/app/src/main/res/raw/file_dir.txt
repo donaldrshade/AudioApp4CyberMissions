@@ -1,5 +1,5 @@
 <course>
-    name:"Spiritual Continuum"
+    name:Spiritual Continuum;
     <lesson>
         name:Be Born Again;
         mp3:born_again_1;
@@ -9,4 +9,7 @@
         name:Set Your Mind On The Spirit;
         mp3:set_mind_spirit_2;
      </lesson>
+</course>
+<course>
+    name:A second Course;
 </course>
