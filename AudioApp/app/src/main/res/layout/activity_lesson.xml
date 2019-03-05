@@ -93,7 +93,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/play_button"
-                    android:layout_margin="12dp"/>
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginBottom="20dp"/>
             </RelativeLayout>
         </LinearLayout>
     </FrameLayout>

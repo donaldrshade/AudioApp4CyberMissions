@@ -3,6 +3,7 @@ package com.lightsys.audioapp;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.nfc.FormatException;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -26,7 +27,7 @@ public class lessonActivity extends AppCompatActivity {
     private View mContentControlsView;  //Bottom controls
     private View mMediaControlsView;    //Top (audio) controls
 
-    private boolean mVisible;
+
 
     //Media Buttons
     private MediaPlayer media = null;
@@ -37,8 +38,11 @@ public class lessonActivity extends AppCompatActivity {
     private ImageButton next;
     private SeekBar seek;
 
-    //Content Buttons
-    private FloatingActionButton home;
+    //Other Declarations
+    private boolean mVisible;
+    private boolean mIsPlaying = false;
+    private Runnable mRunnable;
+    private Handler mHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,9 +80,11 @@ public class lessonActivity extends AppCompatActivity {
                 if(media.isPlaying()){
                     media.pause();
                     play.setImageDrawable(getResources().getDrawable(R.drawable.ic_play));
+                    mIsPlaying = false;
                 } else {
                     media.start();
                     play.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause));
+                    mIsPlaying = true;
                 }
             }
         });
@@ -90,6 +96,7 @@ public class lessonActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 media.seekTo(media.getCurrentPosition() - 10000);
+                seek.setProgress(media.getCurrentPosition());
             }
         });
 
@@ -100,6 +107,7 @@ public class lessonActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 media.seekTo(media.getCurrentPosition() + 10000);
+                seek.setProgress(media.getCurrentPosition());
             }
         });
 
@@ -110,6 +118,7 @@ public class lessonActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 media.seekTo(0);
+                seek.setProgress(media.getCurrentPosition());
             }
         });
 
@@ -121,19 +130,45 @@ public class lessonActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 media.seekTo(media.getDuration());
+                seek.setProgress(media.getCurrentPosition());
             }
         });
 
         seek = findViewById(R.id.seek_bar);
+        initSeekBar();
+        seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                if(b){
+                    media.seekTo(i);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                if(mIsPlaying){
+                    media.pause();  //Only pause if currently playing
+                }
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                if(mIsPlaying){
+                    media.start();  //Only resume if previously playing
+                }
+            }
+        });
 
         //When activity screen clicked, toggle visibility of controls
         mContentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (mVisible) {
-                    hide();
+                    mMediaControlsView.setVisibility(View.GONE);
+                    mVisible = false;
                 } else {
-                    show();
+                    mMediaControlsView.setVisibility(View.VISIBLE);
+                    mVisible = true;
                 }
             }
         });
@@ -151,6 +186,22 @@ public class lessonActivity extends AppCompatActivity {
             throw new FormatException();
         }
     }
+
+    //Initialize SeekBar to auto-update position with audio
+    protected void initSeekBar(){
+        seek.setMax(media.getDuration());
+
+        mRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if(media != null) {
+                    seek.setProgress(media.getCurrentPosition());
+                }
+                mHandler.postDelayed(mRunnable, 500);
+            }
+        };
+        mHandler.postDelayed(mRunnable, 500);
+    }
     
     //Returns from lesson to MainActivity
     //and closes current lesson
@@ -158,22 +209,6 @@ public class lessonActivity extends AppCompatActivity {
         Intent main = new Intent(lessonActivity.this, MainActivity.class);
         startActivity(main);
         finish();
-    }
-
-    //Hide controls
-    private void hide() {
-        mContentControlsView.setVisibility(View.GONE);
-        mMediaControlsView.setVisibility(View.GONE);
-        mVisible = false;
-    }
-
-    //Show controls
-    @SuppressLint("InlinedApi")
-    private void show() {
-        // Show the system bar
-        mContentControlsView.setVisibility(View.VISIBLE);
-        mMediaControlsView.setVisibility(View.VISIBLE);
-        mVisible = true;
     }
 
     //Open menu
