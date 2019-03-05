@@ -5,21 +5,17 @@ import java.util.ArrayList;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-
 import java.io.File;
 
 import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
-
     File fileDir;
     ArrayList Courses;
     @Override
@@ -43,17 +39,15 @@ public class MainActivity extends AppCompatActivity {
         */
         getCourseData();
         initRecyclerView();
+    }
 
-        //TODO:Remove this once RecyclerView is implemented
-        FloatingActionButton fab = findViewById(R.id.fab);
+       FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 lessonActivity();
             }
-        });
-    }
-
+        }
     private void getCourseData() {
         Courses = new ArrayList<Course>();//init the Array List
 
