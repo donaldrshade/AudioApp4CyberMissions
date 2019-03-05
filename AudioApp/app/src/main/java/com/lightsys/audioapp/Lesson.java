@@ -5,6 +5,9 @@ public class Lesson {
     String mp3;
     String textData;
 
+    Lesson(){
+
+    }
     Lesson(String name){
         this.name = name;
     }
