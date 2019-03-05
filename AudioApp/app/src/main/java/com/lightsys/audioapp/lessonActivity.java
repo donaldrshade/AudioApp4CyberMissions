@@ -23,59 +23,19 @@ import java.io.IOException;
  */
 public class lessonActivity extends AppCompatActivity {
 
-    /**
-     * Some older devices needs a small delay between UI widget updates
-     * and a change of the status and navigation bar.
-     */
-    private static final int UI_ANIMATION_DELAY = 300;
-    private final Handler mHideHandler = new Handler();
     private View mContentView;
-    private final Runnable mHidePart2Runnable = new Runnable() {
-        @SuppressLint("InlinedApi")
-        @Override
-        public void run() {
-            // Delayed removal of status and navigation bar
-
-            // Note that some of these constants are new as of API 16 (Jelly Bean)
-            // and API 19 (KitKat). It is safe to use them, as they are inlined
-            // at compile-time and do nothing on earlier devices.
-            mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
-                    | View.SYSTEM_UI_FLAG_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-        }
-    };
     private View mContentControlsView;
     private View mMediaControlsView;
-    private final Runnable mShowPart2Runnable = new Runnable() {
-        @Override
-        public void run() {
-            // Delayed display of UI elements
-            ActionBar actionBar = getSupportActionBar();
-            if (actionBar != null) {
-                actionBar.show();
-            }
-            mContentControlsView.setVisibility(View.VISIBLE);
-            mMediaControlsView.setVisibility(View.VISIBLE);
-        }
-    };
+
     private boolean mVisible;
-    /**
-     * Touch listener to use for in-layout UI controls to delay hiding the
-     * system UI. This is to prevent the jarring behavior of controls going away
-     * while interacting with activity UI.
-     */
-    private final View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            return false;
-        }
-    };
+
 
     private MediaPlayer media = null;
     private ImageButton play;
+    private ImageButton back10;
+    private ImageButton fwd10;
+    private ImageButton prev;
+    private ImageButton next;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,8 +48,8 @@ public class lessonActivity extends AppCompatActivity {
         mMediaControlsView = findViewById(R.id.media_controls);
         mContentView = findViewById(R.id.fullscreen_content);
 
-        String url = "l1_born_again.mp3";
-        media = createMedia(url);
+        String uri = "l1_born_again.mp3";
+        media = createMedia(uri);
 
         play = findViewById(R.id.play_button);
         play.setImageDrawable(getResources().getDrawable(R.drawable.ic_play));
@@ -108,7 +68,47 @@ public class lessonActivity extends AppCompatActivity {
             }
         });
 
-        FloatingActionButton home = findViewById(R.id.dummy_button);
+        back10 = findViewById(R.id.back10_button);
+        back10.setImageDrawable(getResources().getDrawable(R.drawable.ic_back10));
+        back10.setOnClickListener(new View.OnClickListener() {
+            //Seek to 10 seconds behind current position
+            @Override
+            public void onClick(View view) {
+                media.seekTo(media.getCurrentPosition() - 10000);
+            }
+        });
+
+        fwd10 = findViewById(R.id.fwd10_button);
+        fwd10.setImageDrawable(getResources().getDrawable(R.drawable.ic_fwd10));
+        fwd10.setOnClickListener(new View.OnClickListener() {
+            //Seek to 10 seconds ahead of current position
+            @Override
+            public void onClick(View view) {
+                media.seekTo(media.getCurrentPosition() + 10000);
+            }
+        });
+
+        prev = findViewById(R.id.previous_button);
+        prev.setImageDrawable(getResources().getDrawable(R.drawable.ic_prev));
+        prev.setOnClickListener(new View.OnClickListener() {
+            //Seek back to start of audio
+            @Override
+            public void onClick(View view) {
+                media.seekTo(0);
+            }
+        });
+
+        next = findViewById(R.id.next_button);
+        next.setImageDrawable(getResources().getDrawable(R.drawable.ic_next));
+        next.setOnClickListener(new View.OnClickListener() {
+            //Seek to end of audio
+            @Override
+            public void onClick(View view) {
+                media.seekTo(media.getDuration());
+            }
+        });
+
+        FloatingActionButton home = findViewById(R.id.home_button);
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -126,11 +126,6 @@ public class lessonActivity extends AppCompatActivity {
                 toggle();
             }
         });
-
-        // Upon interacting with UI controls, delay any scheduled hide()
-        // operations to prevent the jarring behavior of controls going away
-        // while interacting with the UI.
-        findViewById(R.id.play_button).setOnTouchListener(mDelayHideTouchListener);
     }
 
     private MediaPlayer createMedia(String url){
@@ -153,29 +148,16 @@ public class lessonActivity extends AppCompatActivity {
     }
 
     private void hide() {
-        // Hide UI first
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.hide();
-        }
         mContentControlsView.setVisibility(View.GONE);
         mMediaControlsView.setVisibility(View.GONE);
         mVisible = false;
-
-        // Schedule a runnable to remove the status and navigation bar after a delay
-        mHideHandler.removeCallbacks(mShowPart2Runnable);
-        mHideHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY);
     }
 
     @SuppressLint("InlinedApi")
     private void show() {
         // Show the system bar
-        mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+        mContentControlsView.setVisibility(View.VISIBLE);
+        mMediaControlsView.setVisibility(View.VISIBLE);
         mVisible = true;
-
-        // Schedule a runnable to display UI elements after a delay
-        mHideHandler.removeCallbacks(mHidePart2Runnable);
-        mHideHandler.postDelayed(mShowPart2Runnable, UI_ANIMATION_DELAY);
     }
 }
