@@ -5,12 +5,15 @@ import java.util.ArrayList;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
 import java.io.File;
 
 import java.util.Scanner;
@@ -39,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         */
         getCourseData();
         initRecyclerView();
-    }
+
 
        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -47,7 +50,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 lessonActivity();
             }
-        }
+        });
+    }
     private void getCourseData() {
         Courses = new ArrayList<Course>();//init the Array List
 
@@ -110,8 +114,12 @@ public class MainActivity extends AppCompatActivity {
     //TODO: Remove this once RecyclerView is implemented
     private void lessonActivity() {
         Intent lesson = new Intent(MainActivity.this, lessonActivity.class);
+        lesson.putExtra("lesson_name","Be Born Again");
+        lesson.putExtra("course_name","Spiritual Continuum");
+        lesson.putExtra("lesson_mp3","l1_born_again.mp3");
         startActivity(lesson);
     }
+
 
     //Open menu
 
