@@ -150,7 +150,7 @@ public class lessonActivity extends AppCompatActivity {
             throw new FormatException();
         }
     }
-
+    
     //Returns from lessonActivity to MainActivity
     private void mainActivity() {
         Intent main = new Intent(lessonActivity.this, MainActivity.class);
