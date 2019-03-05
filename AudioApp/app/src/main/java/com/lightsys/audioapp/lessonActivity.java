@@ -1,11 +1,8 @@
 package com.lightsys.audioapp;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.nfc.FormatException;
 import android.os.Handler;
-import android.provider.ContactsContract;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,10 +22,7 @@ import android.widget.Toast;
 public class lessonActivity extends AppCompatActivity {
 
     private View mContentView;          //Main page
-    private View mContentControlsView;  //Bottom controls
     private View mMediaControlsView;    //Top (audio) controls
-
-
 
     //Media Buttons
     private MediaPlayer media = null;
@@ -39,8 +33,8 @@ public class lessonActivity extends AppCompatActivity {
     private ImageButton next;
     private SeekBar seek;
 
-    private Intent inputIntent;
     //Other Declarations
+    private Intent inputIntent;
     private boolean mVisible;
     private boolean mIsPlaying = false;
     private Runnable mRunnable;
@@ -54,7 +48,6 @@ public class lessonActivity extends AppCompatActivity {
         setContentView(R.layout.activity_lesson);
 
         mVisible = true;
-        mContentControlsView = findViewById(R.id.content_controls);
         mMediaControlsView = findViewById(R.id.media_controls);
         mContentView = findViewById(R.id.fullscreen_content);
 
@@ -64,10 +57,12 @@ public class lessonActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        //TODO: Get string from Script file thing
+        //Get lesson data from input Intent
         String mp3 = inputIntent.getStringExtra("lesson_mp3");
         String name = inputIntent.getStringExtra("lesson_name");
         String course = inputIntent.getStringExtra("course_name");
+        
+        setTitle(name);
         Lesson lessonCheck = new Lesson(name,course);
         try {
             media = createMedia(mp3);

@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
     private void getCourseData() {
         Courses = new ArrayList<Course>();//init the Array List
 
@@ -122,7 +123,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     //Open menu
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
