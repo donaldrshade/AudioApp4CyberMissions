@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.nfc.FormatException;
 import android.os.Handler;
+import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -38,6 +39,7 @@ public class lessonActivity extends AppCompatActivity {
     private ImageButton next;
     private SeekBar seek;
 
+    private Intent inputIntent;
     //Other Declarations
     private boolean mVisible;
     private boolean mIsPlaying = false;
@@ -46,6 +48,7 @@ public class lessonActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        inputIntent = getIntent();
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_lesson);
@@ -62,9 +65,15 @@ public class lessonActivity extends AppCompatActivity {
         }
 
         //TODO: Get string from Script file thing
-        String mp3 = "l1_born_again.mp3";
+        String mp3 = inputIntent.getStringExtra("lesson_mp3");
+        String name = inputIntent.getStringExtra("lesson_name");
+        String course = inputIntent.getStringExtra("course_name");
+        Lesson lessonCheck = new Lesson(name,course);
         try {
             media = createMedia(mp3);
+            DatabaseConnection db = new DatabaseConnection(getApplicationContext());
+            int seekTime = db.getSeekTime(lessonCheck);
+            media.seekTo(seekTime);
         } catch (FormatException e) {
             Toast.makeText(getApplicationContext(), "Incorrect file format", Toast.LENGTH_SHORT).show();
             mainActivity();
@@ -241,7 +250,13 @@ public class lessonActivity extends AppCompatActivity {
         //If we close before the audio is finished, save current position
         int currentPosition = media.getCurrentPosition();
         if(currentPosition != media.getDuration()){
-            //TODO: Save to database
+            DatabaseConnection db = new DatabaseConnection(getApplicationContext());
+            Lesson update = new Lesson();
+            update.setName(inputIntent.getStringExtra("lesson_name"));
+            update.setCourse(inputIntent.getStringExtra("course_name"));
+            update.setSeekTime(currentPosition);
+            db.updateLesson(update);
+            //TODO: Add stuff for notes
         }
         media.release();
         media = null;

@@ -64,7 +64,15 @@ public class DatabaseConnection extends SQLiteOpenHelper {
 
     public void addLesson(Lesson lesson){
         SQLiteDatabase db = this.getWritableDatabase();
-        //Do we need a check statement?
+        //Do we need a check statement?YES
+        String query = "select * from " + LESSON_TABLE_NAME + " where "+LESSON_COL_1+" = ?"+" AND "+LESSON_COL_2+" = ?";
+        Cursor res = db.rawQuery(query, new String[]{lesson.getCourse(),lesson.getName()});
+        if(res.moveToNext() == true){
+            return;
+        }
+
+
+
         ContentValues contentValues = new ContentValues();
         contentValues.put(LESSON_COL_1, lesson.getCourse());
         contentValues.put(LESSON_COL_2, lesson.getName());
@@ -81,7 +89,6 @@ public class DatabaseConnection extends SQLiteOpenHelper {
         contentValues.put(LESSON_COL_4, lesson.getNotes());
         String where = LESSON_COL_1+"=? AND "+LESSON_COL_2+"=?";
         String[] whereArgs = new String[] {lesson.getCourse(),lesson.getName()};
-
         db.update(LESSON_TABLE_NAME, contentValues, where, whereArgs);
     }
     public int getSeekTime(Lesson lesson) {
