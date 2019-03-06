@@ -7,23 +7,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.lightsys.audioapp.R;
-
-/**************************************************************************************************
- *                              Created by nicholasweg on 6/27/17.                                *
- *  Any changes made to this file regarding the database structure won't take effect unless you   *
- *  reinstall the app. The onCreate function only runs the first time the app is made. There may  *
- *  be a need to writed update functions so that won't have to happen if that situation comes up  *
- *  in the future. Otherwise you can use the onUpgrade function.                                  *
- **************************************************************************************************
- *
- * Correction to the above comment. While changes to the app while developement should be used with
- * a reinstall, you must watch for changes to the database on a new version. This changes should be
- * onUpgrade as a new case statement.
- * -DSHADE
- *
- * Used in AudioApp
- */
 
 public class DatabaseConnection extends SQLiteOpenHelper {
     //Lesson variables
@@ -32,13 +15,11 @@ public class DatabaseConnection extends SQLiteOpenHelper {
     public static String LESSON_COL_2 = "LESSON_NAME";
     public static String LESSON_COL_3 = "SEEK_TIME";
     public static String LESSON_COL_4 = "NOTE";
-    private Resources r;
 
     private static final int versionNumber = 1;
 
     public DatabaseConnection(Context context) {
         super(context, context.getResources().getString(R.string.app_name)+".db", null, versionNumber);
-        r = context.getResources();
     }
 
     @Override
@@ -64,14 +45,11 @@ public class DatabaseConnection extends SQLiteOpenHelper {
 
     public void addLesson(Lesson lesson){
         SQLiteDatabase db = this.getWritableDatabase();
-        //Do we need a check statement?YES
         String query = "select * from " + LESSON_TABLE_NAME + " where "+LESSON_COL_1+" = ?"+" AND "+LESSON_COL_2+" = ?";
         Cursor res = db.rawQuery(query, new String[]{lesson.getCourse(),lesson.getName()});
         if(res.moveToNext() == true){
             return;
         }
-
-
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(LESSON_COL_1, lesson.getCourse());

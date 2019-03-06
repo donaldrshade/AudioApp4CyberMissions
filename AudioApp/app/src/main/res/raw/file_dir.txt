@@ -8,8 +8,13 @@
     <lesson>
         name:Set Your Mind On The Spirit;
         mp3:set_mind_spirit_2.mp3;
-     </lesson>
-</course>
-<course>
-    name:A second Course;
+    </lesson>
+    <lesson>
+        name:Be Filled with the Spirit;
+        mp3:filled_spirit_3.mp3;
+    </lesson>
+    <lesson>
+       name:Worship in the Spirit;
+       mp3:worship_spirit_4.mp3;
+    </lesson>
 </course>

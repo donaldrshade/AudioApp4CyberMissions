@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,44 +12,25 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
-import java.io.File;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
-    File fileDir;
     ArrayList Courses;
+    int selectedCourse;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-      
-      /* Changed Where the files go, this would be the external location.
-        //Finds sharedPreferences to gather data from
-        sharedPreferences = this.getSharedPreferences("audioApp", Context.MODE_PRIVATE);
-        //hasInited will figure weather or not the app has been run before.
-        Boolean hasInited = sharedPreferences.getBoolean("sp_init",false);
-        if(!hasInited){//only runs if the app has not been run before
-            SharedPreferences.Editor myEdit = sharedPreferences.edit();
-            myEdit.putBoolean("sp_init",true);
-            myEdit.commit();
-            fileDir = getDir("Courses_Dir",Context.MODE_PRIVATE);//creates the fileDir for the app
-        }
-        */
         getCourseData();
         initRecyclerView();
 
 
-       FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                lessonActivity();
-            }
-        });
     }
 
     private void getCourseData() {
@@ -104,8 +84,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initRecyclerView(){
-        RecyclerView recyclerView = findViewById(R.id.recyclerv_view);
-        Recycler_View_Adapter adapter = new Recycler_View_Adapter(Courses, this);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view_course);
+        courseRecyclerView adapter = new courseRecyclerView(Courses, this,this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+    private void initLessonRecyclerView(Course c){
+        RecyclerView recyclerView = findViewById(R.id.recycler_view_lesson);
+        lessonRecyclerView adapter = new lessonRecyclerView(c.lessons, this,this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -148,5 +134,47 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void minimizeCourses() {
+        LinearLayout courses = findViewById(R.id.content_courses);
+        courses.setVisibility(View.INVISIBLE);
+        LinearLayout.LayoutParams size = new LinearLayout.LayoutParams(0,0);
+        courses.setLayoutParams(size);
+    }
+    public void expandCourses(){
+        LinearLayout courses = findViewById(R.id.content_courses);
+        courses.setVisibility(View.VISIBLE);
+        LinearLayout.LayoutParams size = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        courses.setLayoutParams(size);
+    }
+    public void minimizeLessons() {
+        LinearLayout lessons = findViewById(R.id.content_lessons);
+        lessons.setVisibility(View.INVISIBLE);
+        LinearLayout.LayoutParams size = new LinearLayout.LayoutParams(0,0);
+        lessons.setLayoutParams(size);
+    }
+    public void expandLessons(){
+        LinearLayout lessons = findViewById(R.id.content_lessons);
+        lessons.setVisibility(View.VISIBLE);
+        LinearLayout.LayoutParams size = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        lessons.setLayoutParams(size);
+    }
+
+    public void setSelectedCourse(int position) {
+        selectedCourse = position;
+        initLessonRecyclerView((Course) Courses.get(position));
+    }
+
+    public void gotoAudio(int position, String lesson_name) {
+        Intent audio = new Intent(this,lessonActivity.class);
+        Course select = (Course) Courses.get(selectedCourse);
+        Lesson selectedLesson = (Lesson) select.getLessons().get(position);
+        audio.putExtra("course_name",select.name);
+        audio.putExtra("lesson_name",lesson_name);
+        audio.putExtra("lesson_mp3",selectedLesson.mp3);
+        expandCourses();
+        minimizeLessons();
+        startActivity(audio);
     }
 }
